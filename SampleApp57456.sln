@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{86695CE1-FBF0-4072-87D0-2C8F7C4C59F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Order.API", "src\Order.API\Order.API.csproj", "{6FD7FE49-A354-4443-8954-F94D45644B0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stock.API", "src\Stock.API\Stock.API.csproj", "{8B199378-7DAE-4FFB-9EB8-720D5E7ED6BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherForecast.API", "src\WeatherForecast.API\WeatherForecast.API.csproj", "{33CCF1A5-BEE3-49FD-A62B-4B05DDD71B9C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6FD7FE49-A354-4443-8954-F94D45644B0D} = {86695CE1-FBF0-4072-87D0-2C8F7C4C59F7}
+		{8B199378-7DAE-4FFB-9EB8-720D5E7ED6BE} = {86695CE1-FBF0-4072-87D0-2C8F7C4C59F7}
+		{33CCF1A5-BEE3-49FD-A62B-4B05DDD71B9C} = {86695CE1-FBF0-4072-87D0-2C8F7C4C59F7}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6FD7FE49-A354-4443-8954-F94D45644B0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FD7FE49-A354-4443-8954-F94D45644B0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FD7FE49-A354-4443-8954-F94D45644B0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FD7FE49-A354-4443-8954-F94D45644B0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B199378-7DAE-4FFB-9EB8-720D5E7ED6BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B199378-7DAE-4FFB-9EB8-720D5E7ED6BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B199378-7DAE-4FFB-9EB8-720D5E7ED6BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B199378-7DAE-4FFB-9EB8-720D5E7ED6BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33CCF1A5-BEE3-49FD-A62B-4B05DDD71B9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33CCF1A5-BEE3-49FD-A62B-4B05DDD71B9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33CCF1A5-BEE3-49FD-A62B-4B05DDD71B9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33CCF1A5-BEE3-49FD-A62B-4B05DDD71B9C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
