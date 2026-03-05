@@ -26,8 +26,21 @@ using (var scope = app.Services.CreateScope())
 app.MapOpenApi();
 app.MapScalarApiReference();
 
+app.UseWebSockets();
 app.UseCors("AllowAll");
 var api = app.MapGroup("/api");
+
+app.Map("/ws", async (HttpContext context) =>
+{
+    if (!context.WebSockets.IsWebSocketRequest)
+    {
+        context.Response.StatusCode = 400;
+        return;
+    }
+
+    var ws = await context.WebSockets.AcceptWebSocketAsync();
+    await WebSocketHandler.Handle(ws);
+});
 
 api.MapGet("/todos", async (TodoDbContext db) =>
     await db.Todos.ToListAsync());
@@ -46,6 +59,7 @@ api.MapPost("/todos", async (ToDoRequest task, TodoDbContext db) =>
     };
     db.Todos.Add(newTodo);
     await db.SaveChangesAsync();
+    await WebSocketHandler.BroadcastCreated(newTodo);
     return Results.Created($"/todos/{newTodo.Id}", newTodo);
 });
 
@@ -58,6 +72,7 @@ api.MapPut("/todos/{id:int}", async (int id, ToDoRequest task, TodoDbContext db)
     todo.Title = task.Title;
     todo.IsCompleted = task.IsCompleted;
     await db.SaveChangesAsync();
+    await WebSocketHandler.BroadcastUpdated(todo);
     return Results.NoContent();
 });
 
@@ -68,6 +83,7 @@ api.MapDelete("/todos/{id:int}", async (int id, TodoDbContext db) =>
 
     db.Todos.Remove(todo);
     await db.SaveChangesAsync();
+    await WebSocketHandler.BroadcastDeleted(id);
     return Results.NoContent();
 });
 

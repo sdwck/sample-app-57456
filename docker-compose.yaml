@@ -1,0 +1,46 @@
+﻿services:
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: todo_db
+    ports:
+      - "5432:5432"
+    networks:
+      - sample-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  server:
+    build:
+      context: .
+      dockerfile: src/Todo.Server/Dockerfile
+    image: todo-server
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    networks:
+      - sample-network
+
+  client:
+    build:
+      context: .
+      dockerfile: src/Todo.Client/Dockerfile
+    image: todo-client
+    ports:
+      - "3000:80"
+    depends_on:
+      - server
+    networks:
+      - sample-network
+
+networks:
+  sample-network:

@@ -16,3 +16,9 @@ export interface MailInboxResponse {
 export interface Pop3Response {
     lastMessage: string | null;
 }
+
+export interface Toast {
+    id: number;
+    text: string;
+    type: 'created' | 'updated' | 'deleted';
+}

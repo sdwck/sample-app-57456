@@ -1,0 +1,79 @@
+﻿name: CI/CD
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build-test-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build images
+        run: docker compose build
+
+      - name: Start containers
+        run: docker compose up -d
+
+      - name: Wait for API
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:8080/api/todos > /dev/null 2>&1; then
+              echo "API ready"
+              exit 0
+            fi
+            echo "Waiting... ($i/30)"
+            sleep 2
+          done
+          echo "API failed to start"
+          docker compose logs
+          exit 1
+
+      - name: Test API - GET todos
+        run: curl -f http://localhost:8080/api/todos
+
+      - name: Test API - POST todo
+        run: |
+          curl -f -X POST http://localhost:8080/api/todos \
+            -H "Content-Type: application/json" \
+            -d '{"title":"CI test task","isCompleted":false}'
+
+      - name: Test API - GET todos after create
+        run: curl -f http://localhost:8080/api/todos
+
+      - name: Test API - PUT todo
+        run: |
+          curl -f -X PUT http://localhost:8080/api/todos/1 \
+            -H "Content-Type: application/json" \
+            -d '{"title":"CI test updated","isCompleted":true}'
+
+      - name: Test API - DELETE todo
+        run: curl -f -X DELETE http://localhost:8080/api/todos/1
+
+      - name: Test frontend
+        run: curl -f http://localhost:3000
+
+      - name: Login to Docker Hub
+        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Tag and push images
+        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+        run: |
+          docker tag todo-server ${{ secrets.DOCKERHUB_USERNAME }}/todo-server:latest
+          docker tag todo-client ${{ secrets.DOCKERHUB_USERNAME }}/todo-client:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-server:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-client:latest
+
+      - name: Stop and clean up
+        if: always()
+        run: |
+          docker compose down -v
+          docker system prune -af
